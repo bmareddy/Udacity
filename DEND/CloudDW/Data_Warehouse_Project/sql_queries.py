@@ -72,8 +72,7 @@ user_id INT NOT NULL SORTKEY,
 first_name VARCHAR(30),
 last_name VARCHAR(30),
 gender VARCHAR(1),
-level VARCHAR(30),
-as_of_timestamp TIMESTAMP
+level VARCHAR(30)
 )
 """)
 
@@ -136,17 +135,22 @@ es.sessionId,
 es.location,
 es.userAgent
 FROM events_staging es
-LEFT JOIN dim_songs ds
+LEFT JOIN (SELECT ds.*, da.name as artist_name 
+            FROM dim_songs ds
+            JOIN dim_artists da
+               ON ds.artist_id = da.artist_id
+        ) ds
     ON es.song = ds.title
     AND es.length = ds.duration
+    AND es.artist = ds.artist_name
 WHERE es.page = 'NextSong'
 """)
 
 user_table_insert = ("""
-INSERT INTO dim_users (user_id, first_name, last_name, gender, level, as_of_timestamp)
+INSERT INTO dim_users (user_id, first_name, last_name, gender, level)
 SELECT userId, firstName, lastName, gender, level
 FROM (
-    SELECT userId, firstName, lastName, gender, level, TIMESTAMP 'epoch' + (CAST(ts AS BIGINT)/1000) * INTERVAL '1 second'
+    SELECT userId, firstName, lastName, gender, level, 
     ROW_NUMBER() OVER (PARTITION BY userId ORDER BY CAST(ts AS BIGINT) DESC) as rownum
     FROM events_staging
     WHERE userId IS NOT NULL
@@ -162,11 +166,15 @@ FROM songs_staging
 
 artist_table_insert = ("""
 INSERT INTO dim_artists (artist_id, name, location, latitude, longitude)
-SELECT DISTINCT artist_id, artist_name, 
+SELECT artist_id, artist_name, 
 CASE WHEN artist_location = '' THEN NULL ELSE artist_location END, 
 CASE WHEN artist_latitude = '' THEN NULL ELSE artist_latitude END, 
 CASE WHEN artist_longitude = '' THEN NULL ELSE artist_longitude END
-FROM songs_staging
+FROM (SELECT artist_id, artist_name, artist_location, artist_latitude, artist_longitude,
+        ROW_NUMBER() OVER (PARTITION BY artist_id ORDER BY year DESC) as rownum
+        FROM songs_staging
+    ) sub
+WHERE rownum = 1
 """)
 
 time_table_insert = ("""

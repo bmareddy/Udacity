@@ -17,8 +17,10 @@ Launch a Redshift cluster and grant appropriate permissions through an IAM role.
 
 #### Song Data
 1. Insert the song data into `songs_staging` table using `COPY` command
-6. Perform sanity checks and validations
-7. Using `songs_staging` as source, insert into `dim_songs` and `dim_artists` tables
+2. Perform sanity checks and validations
+3. Using `songs_staging` as source, insert into `dim_songs` and `dim_artists` 
+4. When inserting into `dim_artists`, eliminate duplicate records of artists by sorting on `year` and filtering to the record corresponding to the latest year
+
 
 #### Log Data
 1. Insert the log data into `events_staging` table using `COPY` command
