@@ -1,3 +1,13 @@
 */__pycache__
+*/*/*/*/__pycache__
+*/*/*/*/*/__pycache__
 */.ipynb_checkpoints
 */*.pptx
+*/*.cfg
+*/*/*.cfg
+*/*/*/*.cfg
+*/*/*/*/*.cfg
+*/*.csv
+*/*/*.csv
+*/*.zip
+*/*/*.zip
