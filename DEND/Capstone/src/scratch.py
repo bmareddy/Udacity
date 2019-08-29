@@ -17,3 +17,5 @@ data_CO = data_CO.selectExpr("`State Code` as state_code", "`State Name` as stat
     "`Site Num` as site_num", "POC", "`Sample Duration` as sample_duration", \
     "`Date Local` as date", \
     "`Arithmetic Mean` as mean", "`1st Max Value` as max_value", "AQI")
+ raw_data_o3.where("`State Code` == 1 and `County Code` == 73").groupBy("State Code", "County Code", "Date Local").agg({"Arithmetic Mean":"max", "AQI":"max"}).show(10,truncate=False)
+ raw_data_o3.where(col("AQI").isNotNull()).show(10,truncate=False)

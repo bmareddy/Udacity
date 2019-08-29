@@ -7,7 +7,10 @@
 */*/*.cfg
 */*/*/*.cfg
 */*/*/*/*.cfg
+.csv
 */*.csv
 */*/*.csv
 */*.zip
 */*/*.zip
+.pdf
+.png
