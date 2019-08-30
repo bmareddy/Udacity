@@ -19,6 +19,7 @@ The data sets used for the project are:
 The goal of this project is combine the datasets mentioned above and analyze / compare the air quality in counties with non-white majority populations (based on 2018 est.) in the United States. The output of analysis will produce % of days of Good, Moderate and Unhealthy air between counties with white majority and non-white majority populations.
 
 Example Output:
+```
 -------------------------------------
 |           WA      |       Non-WA  |
 -------------------------------------
@@ -26,6 +27,7 @@ Example Output:
 |Moderate   30%     |       30%     |
 |Unhealthy  30%     |       30%     |
 -------------------------------------
+```
 
 ### Data Model
 
