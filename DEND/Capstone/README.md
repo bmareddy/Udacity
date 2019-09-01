@@ -6,12 +6,12 @@ This project attempts to understand and answer if there is a relationship betwee
 
 The data sets used for the project are:
 1. Daily Measurements of pollutant gases and particulate matter from 2016-2019. Sourced AQS Datamart by U.S. EPA. Each data set contains 4 files (one per year).
-    a. Ozone (row count ~ )
-    b. Carbon Monoxide (row count ~ )
-    c. Sulphur Dioxide (row count ~ )
-    d. Nitrogen Dioxide (row count ~ )
-    e. PM2.5 (row count ~ )
-    f. PM10 (roow count ~ )
+    a. Ozone (row count ~1,246,405 )
+    b. Carbon Monoxide (row count ~633,903 )
+    c. Sulphur Dioxide (row count ~1,061,586 )
+    d. Nitrogen Dioxide (row count ~483,423 )
+    e. PM2.5 (row count ~1,482,932 )
+    f. PM10 (row count ~537,456 )
 2. Population and population estimates by age, race and gender from 2010 through 2018. Sourced from U.S. Census Bureau. This data set contains 1 file with a row count of 656,678
 
 ### Scope
@@ -23,19 +23,20 @@ Example Output:
 -------------------------------------
 |           WA      |       Non-WA  |
 -------------------------------------
-|Good       40%     |       40%     |
+|Good       30%     |       30%     |
 |Moderate   30%     |       30%     |
 |Unhealthy  30%     |       30%     |
+|No Data    10%     |       10%     |
 -------------------------------------
 ```
 
 ### Data Model
 
-The data model will contain tables as following:
+The data model will contain tables in production as following:
 
-1. census (state_code, state_name, county_code, county_name, year, agegrp, tot_pop, tot_wa_pop)
-2. air_quality (state_code, county_code, date, parameter_code, mean, first_max, aqi_original, aqi_category)
-3. parameter_aqi_breakpoints (parameter_code, parameter_name, min_value, max_value, aqi_category)
+1. census (state_code, state_name, county_code, county_name, year, age_group, total_population, white_male, white_female, white_percent, white_county_indicator)
+2. air_quality (state_code, county_code, date, aqi_category)
+3. pollutant_aqi_breakpoints (pollutant_code, pollutant_name, sample_duration, aqi_category, min_value, max_value)
 
 ### Technology Choices
 
@@ -75,6 +76,17 @@ A: This will require updating the *Air Quality Data* section of the ETL approach
 
 Q: The database needed to be accessed by 100+ people.
 A: Enable Redshift to auto-scale based on the demand. If the demand continues to increase, replicate the database in multiple regions so the load is distributed.
+
+### Future Improvements to the code
+1. Implement logging
+2. Implement Data Quality checks in `spark_etl.py`
+3. Debug errors with `parquet` file copy to redshift, and remove dependency on pandas.Dataframe.to_csv()
+3. Find ways to leverage air quality measurement sites and map them to counties without data
+
+### Run Instructions
+
+1. Execute `create_tables.sql` on the Redshift instance
+2. Submit `capstone.py` as spark job
 
 ### References
 1. https://aqs.epa.gov/aqsweb/documents/data_mart_welcome.html
